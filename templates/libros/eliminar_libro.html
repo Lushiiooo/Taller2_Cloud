@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Libro - Biblioteca Virtual{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1">
+    <div class="card" style="max-width: 500px; margin: 2rem auto;">
+        <div class="card-header" style="background: #dc3545;">
+            🗑️ Eliminar Libro
+        </div>
+        <div class="card-body">
+            <div style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;">
+                ⚠️ <strong>Esta acción es irreversible</strong>
+            </div>
+            
+            <h2 style="color: #333; margin-bottom: 1rem; text-align: center;">{{ libro.titulo }}</h2>
+            
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;">
+                <p><strong>Autor:</strong> {{ libro.autor }}</p>
+                <p><strong>Disponibles:</strong> {{ libro.cantidad_disponible }}</p>
+                {% if libro.descripcion %}
+                    <p><strong>Descripción:</strong> {{ libro.descripcion }}</p>
+                {% endif %}
+            </div>
+            
+            <p style="color: #666; margin-bottom: 1.5rem; text-align: center;">
+                ¿Estás seguro de que deseas eliminar este libro?
+            </p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-danger">🗑️ Sí, Eliminar</button>
+                    <a href="{% url 'dashboard_admin' %}" class="btn btn-secondary">✕ Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

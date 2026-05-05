@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard del Administrador - Biblioteca Virtual{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1">
+    <div style="background: white; padding: 2rem; border-radius: 8px;">
+        <h1>📊 Dashboard del Administrador</h1>
+        <p style="color: #666; margin-top: 0.5rem;">Gestiona los libros de la biblioteca</p>
+    </div>
+</div>
+
+<div style="margin: 2rem 0; display: flex; gap: 1rem; flex-wrap: wrap;">
+    <div style="background: white; padding: 1rem; border-radius: 8px; flex: 1; min-width: 150px; text-align: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+        <div style="font-size: 2rem; color: #667eea; margin-bottom: 0.5rem;">{{ libros.count }}</div>
+        <div style="color: #666; font-size: 0.9rem;">Libros en la biblioteca</div>
+    </div>
+    <div style="background: white; padding: 1rem; border-radius: 8px; flex: 1; min-width: 150px; text-align: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+        <div style="font-size: 2rem; color: #28a745; margin-bottom: 0.5rem;">{{ libros|length }}</div>
+        <div style="color: #666; font-size: 0.9rem;">Total de títulos</div>
+    </div>
+</div>
+
+{% if libros %}
+    <div class="card">
+        <div class="card-header">
+            📚 Lista de Libros
+        </div>
+        <div class="card-body" style="overflow-x: auto;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Disponibles</th>
+                        <th>Creado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for libro in libros %}
+                        <tr>
+                            <td style="font-weight: 500;">{{ libro.titulo }}</td>
+                            <td>{{ libro.autor }}</td>
+                            <td>
+                                <span class="book-availability {% if libro.cantidad_disponible > 0 %}availability-available{% else %}availability-unavailable{% endif %}" style="padding: 0.25rem 0.5rem; font-size: 0.9rem;">
+                                    {{ libro.cantidad_disponible }}
+                                </span>
+                            </td>
+                            <td style="font-size: 0.9rem; color: #666;">{{ libro.fecha_creacion|date:"d/m/Y" }}</td>
+                            <td>
+                                <div class="btn-group" style="flex-direction: row; gap: 0.25rem;">
+                                    <a href="{% url 'editar_libro' libro.id %}" class="btn btn-info" style="padding: 0.5rem 1rem; font-size: 0.9rem;">✏️ Editar</a>
+                                    <a href="{% url 'eliminar_libro' libro.id %}" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.9rem;">🗑️ Eliminar</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <h2 class="empty-state-title">No hay libros</h2>
+        <p class="empty-state-text">Comienza agregando libros a tu biblioteca</p>
+        <a href="{% url 'crear_libro' %}" class="btn btn-success">+ Agregar Primer Libro</a>
+    </div>
+{% endif %}
+{% endblock %}
