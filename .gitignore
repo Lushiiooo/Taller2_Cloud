@@ -38,4 +38,4 @@ Thumbs.db
 coverage.xml
 
 # static files built
-/static/
+# (omit global static/ to allow committing custom static assets like style.css)
