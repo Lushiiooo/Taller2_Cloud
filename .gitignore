@@ -13,8 +13,8 @@ __pycache__/
 *.egg
 
 # SQLite DB
-db.sqlite3
-*.sqlite3
+# Keep local DB filename out of gitignore so we can commit the project's database.
+# If you prefer to hide credentials, keep only `.env` ignored and remove DB from ignore.
 
 # IDEs and editors
 .vscode/
