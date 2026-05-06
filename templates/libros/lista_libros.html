@@ -38,7 +38,7 @@
                 </div>
                 <div class="card-footer" style="padding: 1rem;">
                     {% if libro.cantidad_disponible == 0 %}
-                        <button class="btn btn-info" style="width: 100%;" disabled>
+                        <button class="btn btn-info" style="width: 100%;" onclick="simularEnvioCorreo('{{ libro.id }}', this)">
                             📧 Avisame cuando esté disponible
                         </button>
                     {% else %}
@@ -62,4 +62,50 @@
         {% endif %}
     </div>
 {% endif %}
+
+
+
+{% csrf_token %}
+
+<script>
+    function simularEnvioCorreo(libroId, botonElemento){
+        botonElemento.disabled = true;
+        botonElemento.textContent = '⏳ Enviando notificación...';
+
+        //Obtener token CSRF generado por Django
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+
+
+        //hacer la petición POST al endpoint sin recargar la pagina
+        fetch(`/simular-email/${libroId}/`,{
+            method: 'POST',
+            headers:{
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'ok'){
+                //mostrar confirmación al usuario
+                alert(data.mensaje);
+                botonElemento.innerHTML = '✅ Notificación programada';
+                botonElemento.classList.replace('btn-info', 'btn-success');
+
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            botonElemento.disabled = false;
+            botonElemento.innerHTML = "📧 Avisame cuando esté disponible";
+            alert('Hubo un error al procesar la solicitud')
+        });
+
+    }
+</script>
+
+
+
+
 {% endblock %}

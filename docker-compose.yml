@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # El Broker (Redis)
+  broker:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  # La Aplicación Principal (Django)
+  app:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      # Variable de entorno para conectar con el broker usando la red interna
+      - CELERY_BROKER_URL=redis://broker:6379/0
+    depends_on:
+      - broker
+
+  # El Worker (Celery)
+  worker:
+    build: .
+    command: celery -A biblioteca worker --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      # El worker también recibe la variable para saber dónde escuchar
+      - CELERY_BROKER_URL=redis://broker:6379/0
+    depends_on:
+      - broker
+      - app

@@ -117,3 +117,4 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+CELERY_BROKER_URL = 'redis://localhost:6379/0'

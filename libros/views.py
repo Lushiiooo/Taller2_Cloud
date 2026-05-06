@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from .models import Libro
 from .forms import LibroForm, LoginForm
+from .tasks import enviar_gmail
+
 
 # Create your views here.
 
@@ -115,3 +118,32 @@ def eliminar_libro(request, libro_id):
         return redirect('dashboard_admin')
     
     return render(request, 'libros/eliminar_libro.html', {'libro': libro})
+
+
+
+def simular_email(request, libro_id):
+    if request.method == 'POST':
+        # Enviar la tarea a Celery
+        enviar_gmail.delay()
+        
+        return JsonResponse({
+            'status': 'ok',
+            'mensaje': '¡Solicitud recibida! Te enviaremos un correo cuando el libro esté disponible.'
+        })
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
+def generar_reporte(request):
+    if request.method == 'POST':
+        #importamos una tarea asincrona
+        from .tasks import generar_reporte as tarea_reporte
+
+        #enviar tarea a la cola de celery
+        tarea_reporte.delay()
+
+        #Respondemos inmediatamente al administrador
+        return JsonResponse({
+            'status': 'ok',
+            'mensaje': '¡Solicitud de generación de reporte recibida! Te notificaremos cuando el reporte esté listo.'
+        })  
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
