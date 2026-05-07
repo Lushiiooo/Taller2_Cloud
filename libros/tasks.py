@@ -4,7 +4,7 @@ import time
 @shared_task
 def enviar_gmail():
     print("Enviando correo electrónico...")
-    time.sleep(10)
+    time.sleep(5)
     print("Correo electrónico enviado.")
     return "Correo electrónico enviado exitosamente."
 
