@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'biblioteca.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'biblioteca', # Nombre de BD que MySQL crea por defecto
+        'USER': 'admin', 
+        'PASSWORD': 'admin1234_',
+        'HOST': 'biblioteca-db.cd2siok8ifke.us-east-2.rds.amazonaws.com', 
+        'PORT': '3306',
     }
 }
 
